@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { useAuth } from "../../../context/Authcontext"; // ✅ Import Auth Context
@@ -44,14 +44,14 @@ function Login() {
             } else {
                 toast.error(response.data.msg || "Error occurred during login");
             }
-        } catch (error) {
-            console.error("Login error:", error);
-
-            // ✅ Improved Error Handling
-            if (error.response) {
-                toast.error(error.response.data.error || "Invalid credentials");
+        } 
+        catch (error: unknown) { // ✅ Use "unknown" instead of "any"
+            console.error("Signup Error:", error);
+        
+            if (axios.isAxiosError(error)) {  // ✅ Check if it's an Axios error
+                toast.error(error.response?.data?.error || "Something went wrong. Please try again.");
             } else {
-                toast.error("Something went wrong. Please try again.");
+                toast.error("Network error. Please check your connection.");
             }
         }
     };
