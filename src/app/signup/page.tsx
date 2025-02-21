@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import axios, { AxiosError } from "axios";
 import Link from "next/link";
-import axios from "axios";
+
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../context/Authcontext"; // ✅ Import the AuthContext
@@ -63,12 +64,12 @@ const Signup: React.FC = () => {
             } else {
                 toast.error(response.data.msg || "Signup failed. Try again.");
             }
-        } catch (error: any) {
+        } 
+        catch (error: unknown) { // ✅ Use "unknown" instead of "any"
             console.error("Signup Error:", error);
-
-            // ✅ Improved error handling
-            if (error.response) {
-                toast.error(error.response.data.error || "Something went wrong. Please try again.");
+        
+            if (axios.isAxiosError(error)) {  // ✅ Check if it's an Axios error
+                toast.error(error.response?.data?.error || "Something went wrong. Please try again.");
             } else {
                 toast.error("Network error. Please check your connection.");
             }
