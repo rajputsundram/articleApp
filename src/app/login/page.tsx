@@ -13,12 +13,12 @@ function Login() {
     const [credentials, setCredentials] = useState({ email: "", password: "" });
 
     // ✅ Handle Input Change
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
     };
 
     // ✅ Handle Form Submission
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // ✅ Prevent default form behavior
 
         try {
