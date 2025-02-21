@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import Link from "next/link";
-
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../context/Authcontext"; // ✅ Import the AuthContext
@@ -46,7 +45,17 @@ const Signup: React.FC = () => {
         }
 
         try {
-            const response = await axios.post("/api/signup", credentials);
+            // ✅ Create FormData object
+            const formData = new FormData();
+            formData.append("name", credentials.name);
+            formData.append("email", credentials.email);
+            formData.append("password", credentials.password);
+
+            const response = await axios.post("/api/signup", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data", // ✅ Ensure proper content type
+                },
+            });
 
             if (response.data.success) {
                 toast.success("Signup successful! Redirecting...");
@@ -65,10 +74,10 @@ const Signup: React.FC = () => {
                 toast.error(response.data.msg || "Signup failed. Try again.");
             }
         } 
-        catch (error: unknown) { // ✅ Use "unknown" instead of "any"
+        catch (error: unknown) {
             console.error("Signup Error:", error);
         
-            if (axios.isAxiosError(error)) {  // ✅ Check if it's an Axios error
+            if (axios.isAxiosError(error)) {
                 toast.error(error.response?.data?.error || "Something went wrong. Please try again.");
             } else {
                 toast.error("Network error. Please check your connection.");
